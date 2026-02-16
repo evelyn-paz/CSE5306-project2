@@ -1,0 +1,34 @@
+version: "3.9"
+# the (.) signifies the repo root, so we point each service to the root context
+services:
+  gateway:
+    build:
+      context: .
+      dockerfile: services/gateway/Dockerfile
+    container_name: library-gateway
+    environment:
+      - PORT=8080
+      - USERS_ADDR=users:50051
+      - CATALOG_ADDR=catalog:50051
+    ports:
+      - "8080:8080"
+    depends_on:
+      - users
+      - catalog
+      # to test the service, only added the Node1, Node2 and Node3 sections. -ep
+  users:
+    build:
+      context: .
+      dockerfile: services/users/Dockerfile
+    container_name: library-users
+    environment:
+      - PORT=50051
+
+  catalog:
+    build:
+      context: .
+      dockerfile: services/catalog/Dockerfile
+    container_name: library-catalog
+    environment:
+      - PORT=50051
+   # gRPC port 50051
